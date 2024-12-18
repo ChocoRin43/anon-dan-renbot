@@ -40,7 +40,7 @@ async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
         await ctx.send("Kategori harus 'sfw' atau 'nsfw'!")
         return
     
-    if image_type not in ["waifu", "neko", "shinobu", "megumin", "bully", "cuddle", "hug", "kiss", "lick", "pat", "smug", "bonk", "yeet", "blush", "smile", "wave", "highfive", "handhold", "nom", "bite", "glomp", "slap", "kill", "kick", "happy", "wink", "poke", "dance", "cringe"]:
+    if image_type not in ["waifu", "trap", "neko", "shinobu", "megumin", "bully", "cuddle", "hug", "kiss", "lick", "pat", "smug", "bonk", "yeet", "blush", "smile", "wave", "highfive", "handhold", "nom", "bite", "glomp", "slap", "kill", "kick", "happy", "wink", "poke", "dance", "cringe", "blowjob"]:
         await ctx.send("Tipe gambar tidak valid! Cek daftar tipe di waifu.pics.")
         return
 
