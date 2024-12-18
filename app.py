@@ -80,7 +80,7 @@ async def nekos(ctx, kategori: str ="catgirl;"):
                 image_url = data.get("image", {}).get("original", {}).get("url")
                 cat = data.get("category", {})
                 if image_url:
-                    bed = discord.Embed(title=f"Kategori: {cat}", color=discord.Color.fuchsia(), description="Rin Bot | Disediakan oleh nekos.cat")
+                    bed = discord.Embed(title=f"Kategori: {cat}", color=discord.Color.fuchsia())
                     bed.set_footer(text="Rin Bot | Disediakan oleh nekosia.cat", icon_url="attachment://rin.jpeg")
                     bed.set_image(url=image_url)
                     await ctx.send(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
