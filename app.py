@@ -122,6 +122,33 @@ async def gif(ctx, kategori: str ="baka;"):
                 await ctx.send("Terjadi kesalahan saat menghubungi API.")
                 await ctx.send(f"Pesan Kesalahan{url}")
 
+@bot.command()
+async def anime(ctx, query: str):
+    """
+    Mencari informasi anime dari API Jikan.
+    :param query: Query pencarian anime.
+    """
+    api_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=1"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(api_url) as response:
+            if response.status == 200:
+                data = await response.json()
+                if data["data"]:
+                    anime = data["data"][0]
+                    imgAnime = anime["images"]["jpg"]["large_image_url"]
+                    title = anime["title"]
+                    synopsis = anime["synopsis"]
+                    url = anime["url"]
+                    embed = discord.Embed(title=title, description=synopsis, color=discord.Color.fuchsia())
+                    embed.set_image(url=imgAnime)
+                    embed.add_field(name="More Info", value=f"[Click here]({url})")
+                    embed.set_footer(text="Rin Bot | Disediakan oleh Jikan API", icon_url="attachment://rin.jpeg")
+                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                else:
+                    await ctx.send("Anime tidak ditemukan.")
+            else:
+                await ctx.send("Gagal mengambil data dari API.")
 
 @bot.command()
 async def talita(ctx):
