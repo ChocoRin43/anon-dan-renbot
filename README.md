@@ -5,7 +5,7 @@ beberapa fungsi bisa berkerja seperti
 - gif {kategori, bisa diliat di dokumentasi nekos.best}
 - membercount (untuk melihat member pada server tersebut)
 - ping (untuk melihat kalo botnya berjalan dan melihat latensi tersebut)
-- kick dan ban (sedang dalam perbaikan)
+- kick dan ban (untuk mengeluarkan member atau ban dari server tersebut)
 
 ## Penggunaanya
-Tinggal masukin bot tokennya, pasang library discord dan jalankan
+Tinggal masukin bot tokennya, pasang library discord, aiohttp dan jalankan
