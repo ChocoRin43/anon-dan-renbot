@@ -1,17 +1,17 @@
 import discord
 from discord.ext import commands
 import aiohttp
-import json
 
-# Masukkan token bot Anda
 DISCORD_BOT_TOKEN = "" #masukan bot token mu
 
 intents = discord.Intents.default()
-intents.message_content = True  # Aktifkan intent untuk membaca isi pesan
+intents.message_content = True 
 intents.members = True
 
 # Prefix untuk bot
 bot = commands.Bot(command_prefix="+", intents=intents)
+
+# Icon untuk bot (digunakan pada embed)
 botIcon = discord.File("./rin.jpeg", filename="rin.jpeg")
 
 @bot.event
@@ -26,7 +26,7 @@ async def ping(ctx):
     latency = round(bot.latency * 1000)  # Latensi dalam milidetik
     await ctx.send(f"Pong! 🏓 Latency: {latency} ms")
 
-# Command untuk mendapatkan gambar waifu
+# Command untuk mendapatkan gambar dari waifu.pics
 @bot.command()
 async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
     """
@@ -136,42 +136,27 @@ async def membercount(ctx):
     member_count = ctx.guild.member_count  # Mendapatkan jumlah member
     await ctx.send(f"Jumlah anggota di server ini: {member_count}")
 
-# Command untuk kick user
 @bot.command()
 @commands.has_permissions(kick_members=True)
-async def kick(ctx, user: discord.User, *, reason=None):
+async def kick(ctx, member: discord.Member, *, reason=None):
     """
-    Kick anggota dari server.
+    Kick seorang anggota dari server.
+    :param member: Anggota yang akan di-kick.
+    :param reason: Alasan kick (opsional).
     """
-    try:
-        await user.kick(reason=reason)
-        await ctx.send(f"{user} telah di-kick dari server. Alasan: {reason if reason else 'Tidak ada alasan diberikan.'}")
-    except discord.Forbidden:
-        await ctx.send("Bot tidak memiliki izin untuk kick user ini.")
-    except discord.HTTPException:
-        await ctx.send("Terjadi kesalahan saat mencoba kick user.")
+    await member.kick(reason=reason)
+    await ctx.send(f'{member.mention} telah di-kick dari server. Alasan: {reason}')
 
-# Command untuk ban user
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def ban(ctx, user: discord.User, *, reason=None):
+async def ban(ctx, member: discord.Member, *, reason=None):
     """
-    Ban anggota dari server.
+    Ban seorang anggota dari server.
+    :param member: Anggota yang akan di-ban.
+    :param reason: Alasan ban (opsional).
     """
-    try:
-        await user.ban(reason=reason)
-        await ctx.send(f"{user} telah di-ban dari server. Alasan: {reason if reason else 'Tidak ada alasan diberikan.'}")
-    except discord.Forbidden:
-        await ctx.send("Bot tidak memiliki izin untuk ban user ini.")
-    except discord.HTTPException:
-        await ctx.send("Terjadi kesalahan saat mencoba ban user.")
-
-# Error handler untuk memberikan pesan yang jelas jika user tidak memiliki izin
-@ban.error
-@kick.error
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        await ctx.send("Anda tidak memiliki izin untuk melakukan tindakan ini.")
+    await member.ban(reason=reason)
+    await ctx.send(f'{member.mention} telah di-ban dari server. Alasan: {reason}')
 
 # Menjalankan bot
 bot.run(DISCORD_BOT_TOKEN)
