@@ -10,4 +10,12 @@ beberapa fungsi bisa berkerja seperti
 - kick dan ban (untuk mengeluarkan member atau ban dari server tersebut)
 
 ## Penggunaanya
-Tinggal masukin bot tokennya, pasang library discord, aiohttp dan jalankan
+1. Buka file app.py, lalu isikan api-key bot discordnya, untuk default commandnya '+' kamu bisa ganti senyaman kalian
+2. install library
+```bash
+  pip install requirements.txt
+```
+3. Jalankan
+```bash
+  python3 app.py
+```
