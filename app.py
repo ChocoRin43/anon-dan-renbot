@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiohttp
+import random
 
 DISCORD_BOT_TOKEN = "" #masukan bot token mu
 
@@ -151,16 +152,43 @@ async def anime(ctx, query: str):
                 await ctx.send("Gagal mengambil data dari API.")
 
 @bot.command()
+async def chara(ctx, query: str):
+    """
+    Mencari informasi karakter anime dari gelbooru.
+    :param query: Query pencarian karakter.
+    """
+    api_url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1&api_key=3acf790b11d7e62273294e4fa7cca9e9eadd0c8105bcf65cb1721090cd353328&user_id=1612991"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(api_url) as response:
+            if response.status == 200:
+                randomwaifu = random.randint(0, 4)
+                data = await response.json()
+                if data["data"]:
+                    chara = data["post"][{randomwaifu}]
+                    imgChara = chara["file_url"]
+                    name = chara["query"]
+                    url = chara["source"]
+                    embed = discord.Embed(title=name, color=discord.Color.fuchsia())
+                    embed.set_image(url=imgChara)
+                    embed.add_field(name="Source", value=f"[Click here]({url})")
+                    embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                else:
+                    await ctx.send("Karakter tidak ditemukan.")
+            else:
+                await ctx.send("Gagal mengambil data dari API.")
+
+@bot.command()
 async def talita(ctx):
     await ctx.send("Talita punya nya Rehan")
 
-# Command untuk melihat jumlah member
 @bot.command()
 async def membercount(ctx):
     """
     Menampilkan jumlah member di server.
     """
-    member_count = ctx.guild.member_count  # Mendapatkan jumlah member
+    member_count = ctx.guild.member_count
     await ctx.send(f"Jumlah anggota di server ini: {member_count}")
 
 @bot.command()
@@ -185,5 +213,4 @@ async def ban(ctx, member: discord.Member, *, reason=None):
     await member.ban(reason=reason)
     await ctx.send(f'{member.mention} telah di-ban dari server. Alasan: {reason}')
 
-# Menjalankan bot
 bot.run(DISCORD_BOT_TOKEN)
