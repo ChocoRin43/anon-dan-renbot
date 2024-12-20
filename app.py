@@ -169,7 +169,7 @@ async def chara(ctx, query: str):
                     randomwaifu = random.randint(0, 4)
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
-                    name = chara["query"]
+                    name = query
                     url = chara["source"]
                     embed = discord.Embed(title=name, color=discord.Color.fuchsia())
                     embed.set_image(url=imgChara)
