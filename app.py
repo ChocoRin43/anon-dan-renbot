@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import aiohttp
 import random
+import json
+import asyncio
 
 DISCORD_BOT_TOKEN = "" #masukan bot token mu
 
@@ -157,11 +159,25 @@ async def chara(ctx, query: str):
     Mencari informasi karakter anime dari gelbooru.
     :param query: Query pencarian karakter.
     """
-    api_url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1&api_key=3acf790b11d7e62273294e4fa7cca9e9eadd0c8105bcf65cb1721090cd353328&user_id=1612991"
+    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1&api_key=3acf790b11d7e62273294e4fa7cca9e9eadd0c8105bcf65cb1721090cd353328&user_id=1612991"
     
     async with aiohttp.ClientSession() as session:
-        async with session.get(api_url) as response:
+        async with session.get(url) as response:
             if response.status == 200:
+                data = await response.json()
+
+                # Pastikan data tidak kosong
+                if data:
+                    # Simpan data ke file JSON lokal
+                    output_file = "character_data.json"
+                    with open(output_file, "w", encoding="utf-8") as file:
+                        json.dump(data, file, ensure_ascii=False, indent=4)
+                    print(f"Data berhasil disimpan ke {output_file}")
+                else:
+                    print("Tidak ada hasil yang ditemukan untuk tag tersebut.")
+            else:
+                raise Exception(f"Error {response.status}: Failed to fetch data")
+                """
                 randomwaifu = random.randint(0, 4)
                 data = await response.json()
                 if data["data"]:
@@ -176,8 +192,11 @@ async def chara(ctx, query: str):
                     await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
                     await ctx.send("Karakter tidak ditemukan.")
+                """
+                """
             else:
                 await ctx.send("Gagal mengambil data dari API.")
+                """
 
 @bot.command()
 async def talita(ctx):
