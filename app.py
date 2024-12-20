@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 import aiohttp
 import random
-import json
-import asyncio
 
 DISCORD_BOT_TOKEN = "" #masukan bot token mu
 
@@ -168,13 +166,18 @@ async def chara(ctx, query: str):
 
                 # Pastikan data tidak kosong
                 if data:
-                    # Simpan data ke file JSON lokal
-                    output_file = "character_data.json"
-                    with open(output_file, "w", encoding="utf-8") as file:
-                        json.dump(data, file, ensure_ascii=False, indent=4)
-                    print(f"Data berhasil disimpan ke {output_file}")
+                    randomwaifu = random.randint(0, 4)
+                    chara = data["post"][{randomwaifu}]
+                    imgChara = chara["file_url"]
+                    name = chara["query"]
+                    url = chara["source"]
+                    embed = discord.Embed(title=name, color=discord.Color.fuchsia())
+                    embed.set_image(url=imgChara)
+                    embed.add_field(name="Source", value=f"[Click here]({url})")
+                    embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
-                    print("Tidak ada hasil yang ditemukan untuk tag tersebut.")
+                    await ctx.send ("Tidak ada hasil yang ditemukan untuk tag tersebut.")
             else:
                 raise Exception(f"Error {response.status}: Failed to fetch data")
                 """
