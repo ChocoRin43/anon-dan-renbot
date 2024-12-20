@@ -3,7 +3,7 @@ from discord.ext import commands
 import aiohttp
 import random
 
-DISCORD_BOT_TOKEN = "" #masukan bot token mu
+DISCORD_BOT_TOKEN = "" #Masukan bot token mu
 
 intents = discord.Intents.default()
 intents.message_content = True 
@@ -24,10 +24,9 @@ async def ping(ctx):
     """
     Untuk Melihat Ping Delay Dari Bot
     """
-    latency = round(bot.latency * 1000)  # Latensi dalam milidetik
+    latency = round(bot.latency * 1000)
     await ctx.send(f"Pong! 🏓 Latency: {latency} ms")
 
-# Command untuk mendapatkan gambar dari waifu.pics
 @bot.command()
 async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
     """
@@ -36,7 +35,7 @@ async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
         category (str): Kategori gambar ('sfw' atau 'nsfw')
         image_type (str): Tipe gambar ('waifu', 'neko', dll.)
     """
-    # Validasi input
+
     if category not in ["sfw", "nsfw"]:
         await ctx.send("Kategori harus 'sfw' atau 'nsfw'!")
         return
@@ -126,7 +125,7 @@ async def gif(ctx, kategori: str ="baka;"):
 @bot.command()
 async def anime(ctx, query: str):
     """
-    Mencari informasi anime dari API Jikan.
+    Mencari informasi anime dari myanimelist.
     :param query: Query pencarian anime.
     """
     api_url = f"https://api.jikan.moe/v4/anime?q={query}&limit=1"
@@ -156,30 +155,29 @@ async def chara(ctx, query: str):
     """
     Mencari informasi karakter anime dari gelbooru.
     :param query: Query pencarian karakter.
+    Untuk tagnya bisa dispasi atau bisa lihat di gelbooru sendiri
     """
-    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1&api_key=3acf790b11d7e62273294e4fa7cca9e9eadd0c8105bcf65cb1721090cd353328&user_id=1612991"
+    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1"
     
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
                 data = await response.json()
-
-                # Pastikan data tidak kosong
                 if data:
-                    randomwaifu = random.randint(0, 4)
+                    randomwaifu = random.randint(0, 9)
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     name = query
                     url = chara["source"]
                     embed = discord.Embed(title=name, color=discord.Color.fuchsia())
                     embed.set_image(url=imgChara)
-                    embed.add_field(name="Source", value=f"[Click here]({url})")
+                    embed.add_field(value=f"[Source]({url})")
                     embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                     await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
                     await ctx.send ("Tidak ada hasil yang ditemukan untuk tag tersebut.")
             else:
-                await ctx.send("Gagal mengambil data dari API.")
+                await ctx.send("Gagal mengambil data dari Gelbooru, mungkin tag yang kamu masukan salah.")
                 raise Exception(f"Error {response.status}: Failed to fetch data")
 
 @bot.command()
