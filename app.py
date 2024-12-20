@@ -167,7 +167,7 @@ async def chara(ctx, query: str):
                 # Pastikan data tidak kosong
                 if data:
                     randomwaifu = random.randint(0, 4)
-                    chara = data["post"][{randomwaifu}]
+                    chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     name = chara["query"]
                     url = chara["source"]
