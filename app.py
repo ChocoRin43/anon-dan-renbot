@@ -132,7 +132,7 @@ async def anime(ctx, query: str):
     
     async with aiohttp.ClientSession() as session:
         async with session.get(api_url) as response:
-            if response.status == 200:
+            if response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
                 data = await response.json()
                 if data["data"]:
                     anime = data["data"][0]
