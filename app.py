@@ -179,27 +179,8 @@ async def chara(ctx, query: str):
                 else:
                     await ctx.send ("Tidak ada hasil yang ditemukan untuk tag tersebut.")
             else:
-                raise Exception(f"Error {response.status}: Failed to fetch data")
-                """
-                randomwaifu = random.randint(0, 4)
-                data = await response.json()
-                if data["data"]:
-                    chara = data["post"][{randomwaifu}]
-                    imgChara = chara["file_url"]
-                    name = chara["query"]
-                    url = chara["source"]
-                    embed = discord.Embed(title=name, color=discord.Color.fuchsia())
-                    embed.set_image(url=imgChara)
-                    embed.add_field(name="Source", value=f"[Click here]({url})")
-                    embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
-                else:
-                    await ctx.send("Karakter tidak ditemukan.")
-                """
-                """
-            else:
                 await ctx.send("Gagal mengambil data dari API.")
-                """
+                raise Exception(f"Error {response.status}: Failed to fetch data")
 
 @bot.command()
 async def talita(ctx):
