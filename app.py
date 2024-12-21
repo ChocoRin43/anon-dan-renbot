@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
 import aiohttp
+import asyncio
 import random
+
+import urllib
 
 DISCORD_BOT_TOKEN = "" #Masukan bot token mu
 
@@ -152,6 +155,23 @@ async def anime(ctx, query: str):
             else:
                 await ctx.send("Gagal mengambil data dari API.")
 
+async def fetch_gelbooru_videos(tag: str):
+    api_url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tag}&limit=10&json=1"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(api_url) as response:
+            if response.status == 200:
+                data = await response.json()
+                # Filter video
+                video_posts = [
+                    post for post in data.get('post', [])
+                    if post.get('file_url', '').endswith(('.mp4', '.webm'))
+                ]
+                return video_posts
+            else:
+                return []
+
+
 @bot.command()
 async def chara(ctx, query: str):
     """
@@ -173,8 +193,7 @@ async def chara(ctx, query: str):
                     sc = chara["source"]
                     embed = discord.Embed(title=name, color=discord.Color.fuchsia())
                     embed.set_image(url=imgChara)
-                    embed.video(url=imgChara)
-                    embed.add_field(value=f"[Source]({sc})")
+                    embed.add_field(name="Source", value=f"[Click here]({sc})")
                     embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                     await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
@@ -182,6 +201,47 @@ async def chara(ctx, query: str):
             else:
                 await ctx.send("Gagal mengambil data dari Gelbooru, mungkin tag yang kamu masukan salah.")
                 raise Exception(f"Error {response.status}: Failed to fetch data")
+
+@bot.command()
+async def deb(ctx, query: str):
+    def check_url_file_type(urlImage):
+        photo_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
+        video_extensions = {".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv", ".webm"}
+        
+        for ext in photo_extensions:
+            if urlImage.lower().endswith(ext):
+                return True
+        for ext in video_extensions:
+            if urlImage.lower().endswith(ext):
+                return False
+        return "unknown"
+
+    # Cek jenis file dari URL
+    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=10&json=1"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(urlg) as response:
+            if response.status == 200:
+                data = await response.json()
+                if data:
+                    randomwaifu = random.randint(0, 9)
+                    chara = data["post"][randomwaifu]
+                    imgChara = chara["file_url"]
+                    pvImg = chara["preview_url"]
+                    photoext = check_url_file_type(imgChara)
+                    if photoext == True:
+                        embed = discord.Embed(title="Deb", color=discord.Color.fuchsia())
+                        embed.set_image(url=imgChara)
+                        embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+                        await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                    elif photoext == False:
+                        embed = discord.Embed(title="Deb", color=discord.Color.fuchsia())
+                        embed.set_image(url=pvImg)
+                        embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+                        await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                    else:
+                        await ctx.send("Tidak dapat menemukan gambar untuk tag tersebut.")
+            else:
+                await ctx.send("Sepertinya ada yang salah")
 
 @bot.command()
 async def talita(ctx):
