@@ -215,7 +215,7 @@ async def talita(ctx):
     await ctx.send("Talita punya nya Rehan")
 
 @bot.command()
-async def random(ctx):
+async def dadu(ctx):
     """
     Mengkocok dadu 1 sampai 6.
     """
