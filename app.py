@@ -159,10 +159,10 @@ async def chara(ctx, query: str):
     :param query: Query pencarian karakter.
     Untuk tagnya bisa dispasi atau bisa lihat di gelbooru sendiri
     """
-    url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1"
+    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1"
     
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
+        async with session.get(urlg) as response:
             if response.status == 200:
                 data = await response.json()
                 if data:
@@ -170,10 +170,11 @@ async def chara(ctx, query: str):
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     name = query
-                    url = chara["source"]
+                    sc = chara["source"]
                     embed = discord.Embed(title=name, color=discord.Color.fuchsia())
                     embed.set_image(url=imgChara)
-                    embed.add_field(value=f"[Source]({url})")
+                    embed.video(url=imgChara)
+                    embed.add_field(value=f"[Source]({sc})")
                     embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                     await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
