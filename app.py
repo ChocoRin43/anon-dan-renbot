@@ -79,8 +79,9 @@ async def nekos(ctx, kategori: str ="catgirl;"):
                 data = await response.json()
                 image_url = data.get("image", {}).get("original", {}).get("url")
                 cat = data.get("category", {})
+                ctgory = cat.replace("-", " ")
                 if image_url:
-                    bed = discord.Embed(title=f"Kategori: {cat}", color=discord.Color.fuchsia())
+                    bed = discord.Embed(title=f"Kategori: {ctgory}", color=discord.Color.fuchsia())
                     bed.set_footer(text="Rin Bot | Disediakan oleh nekosia.cat", icon_url="attachment://rin.jpeg")
                     bed.set_image(url=image_url)
                     await ctx.send(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
@@ -180,7 +181,7 @@ async def chara(ctx, query: str):
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     pvImg = chara["preview_url"]
-                    name = query
+                    name = query.replace("+", " ").replace("_", " ")
                     sc = chara["source"]
                     photoext = check_url_file_type(imgChara)
                     if photoext == True:
