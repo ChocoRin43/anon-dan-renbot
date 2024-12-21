@@ -1,10 +1,7 @@
 import discord
 from discord.ext import commands
 import aiohttp
-import asyncio
 import random
-
-import urllib
 
 DISCORD_BOT_TOKEN = "" #Masukan bot token mu
 
@@ -135,9 +132,7 @@ async def anime(ctx, query: str):
     
     async with aiohttp.ClientSession() as session:
         async with session.get(api_url) as response:
-            if response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
-                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
-            elif response.status == 200:
+            if response.status == 200:
                 data = await response.json()
                 if data["data"]:
                     anime = data["data"][0]
@@ -155,23 +150,6 @@ async def anime(ctx, query: str):
             else:
                 await ctx.send("Gagal mengambil data dari API.")
 
-async def fetch_gelbooru_videos(tag: str):
-    api_url = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tag}&limit=10&json=1"
-    
-    async with aiohttp.ClientSession() as session:
-        async with session.get(api_url) as response:
-            if response.status == 200:
-                data = await response.json()
-                # Filter video
-                video_posts = [
-                    post for post in data.get('post', [])
-                    if post.get('file_url', '').endswith(('.mp4', '.webm'))
-                ]
-                return video_posts
-            else:
-                return []
-
-
 @bot.command()
 async def chara(ctx, query: str):
     """
@@ -179,31 +157,6 @@ async def chara(ctx, query: str):
     :param query: Query pencarian karakter.
     Untuk tagnya bisa dispasi atau bisa lihat di gelbooru sendiri
     """
-    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=5&json=1"
-    
-    async with aiohttp.ClientSession() as session:
-        async with session.get(urlg) as response:
-            if response.status == 200:
-                data = await response.json()
-                if data:
-                    randomwaifu = random.randint(0, 9)
-                    chara = data["post"][randomwaifu]
-                    imgChara = chara["file_url"]
-                    name = query
-                    sc = chara["source"]
-                    embed = discord.Embed(title=name, color=discord.Color.fuchsia())
-                    embed.set_image(url=imgChara)
-                    embed.add_field(name="Source", value=f"[Click here]({sc})")
-                    embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
-                else:
-                    await ctx.send ("Tidak ada hasil yang ditemukan untuk tag tersebut.")
-            else:
-                await ctx.send("Gagal mengambil data dari Gelbooru, mungkin tag yang kamu masukan salah.")
-                raise Exception(f"Error {response.status}: Failed to fetch data")
-
-@bot.command()
-async def deb(ctx, query: str):
     def check_url_file_type(urlImage):
         photo_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
         video_extensions = {".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv", ".webm"}
@@ -227,21 +180,30 @@ async def deb(ctx, query: str):
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     pvImg = chara["preview_url"]
+                    name = query
+                    sc = chara["source"]
                     photoext = check_url_file_type(imgChara)
                     if photoext == True:
-                        embed = discord.Embed(title="Deb", color=discord.Color.fuchsia())
+                        embed = discord.Embed(title=name, color=discord.Color.fuchsia())
                         embed.set_image(url=imgChara)
+                        embed.add_field(name="Source", value=f"[Click here]({sc})")
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                         await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     elif photoext == False:
-                        embed = discord.Embed(title="Deb", color=discord.Color.fuchsia())
+                        embed = discord.Embed(title="Deb", description="File tersebut video, jika ingin menonton silahkan pergi ke sumbernya", color=discord.Color.fuchsia())
                         embed.set_image(url=pvImg)
+                        embed.add_field(name="Source", value=f"[Click here]({sc})")
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                         await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     else:
                         await ctx.send("Tidak dapat menemukan gambar untuk tag tersebut.")
+            
+            elif response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
+                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
+            
             else:
                 await ctx.send("Sepertinya ada yang salah")
+                raise Exception(f"Error {response.status}: Failed to fetch data")
 
 @bot.command()
 async def talita(ctx):
