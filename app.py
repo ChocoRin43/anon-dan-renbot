@@ -211,6 +211,14 @@ async def talita(ctx):
     await ctx.send("Talita punya nya Rehan")
 
 @bot.command()
+async def random(ctx):
+    """
+    Mengkocok dadu 1 sampai 6.
+    """
+    dadu = random.randint(1, 6)
+    await ctx.send(f"🎲 Angka dadu: {dadu} 🎲")
+
+@bot.command()
 async def membercount(ctx):
     """
     Menampilkan jumlah member di server.
