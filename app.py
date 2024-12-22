@@ -35,6 +35,12 @@ def global_error_handler(exctype, value, tb):
 sys.excepthook = global_error_handler
 
 @bot.event
+async def on_command_error(ctx, error):
+    error_message = f"Command '{ctx.command}' menyebabkan error:\n{error}\n{traceback.format_exc()}"
+    write_log(error_message)
+    await ctx.send("Tag yang kamu masukkan mungkin tidak valid")
+
+@bot.event
 async def on_ready():
     print(f"Bot telah masuk sebagai {bot.user}")
 
@@ -189,7 +195,6 @@ async def chara(ctx, query: str):
                 return False
         return "unknown"
 
-    # Cek jenis file dari URL
     urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=10&json=1"
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
