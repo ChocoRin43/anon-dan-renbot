@@ -213,7 +213,7 @@ async def chara(ctx, query: str):
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
                         await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     elif photoext == False:
-                        embed = discord.Embed(title="Deb", description="File tersebut video, jika ingin menonton silahkan pergi ke sumbernya", color=discord.Color.fuchsia())
+                        embed = discord.Embed(title=name, description="File tersebut video, jika ingin menonton silahkan pergi ke sumbernya", color=discord.Color.fuchsia())
                         embed.set_image(url=pvImg)
                         embed.add_field(name="Source", value=f"[Click here]({sc})")
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
