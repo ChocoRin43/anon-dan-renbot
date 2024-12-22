@@ -190,9 +190,11 @@ async def chara(ctx, query: str):
             if response.status == 200:
                 json_data = await response.json(content_type=None)
                 count = json_data.get('@attributes', {}).get('count')
+                print(f"Jumlah gambar: {count}")
                 if count is not None:
                     count = int(count)
                     count = min(count, 99)
+                    print(f"Jumlah gambar yang diambil: {count}")
                 return count
             else:
                 print(f"Request gagal dengan status: {response.status}")
