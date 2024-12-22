@@ -215,7 +215,7 @@ async def chara(ctx, query: str):
                 return False
         return "unknown"
 
-    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=10&json=1"
+    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=100&json=1"
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
             if response.status == 200 and is_prvnt:
