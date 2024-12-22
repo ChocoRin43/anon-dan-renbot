@@ -190,8 +190,8 @@ async def chara(ctx, query: str):
             if response.status == 200:
                 json_data = await response.json(content_type=None)
                 count = json_data.get('@attributes', {}).get('count')
-                if count >= 101:
-                    count = 100
+                if count >= 100:
+                    count = 99
                     return count
                 return count
             else:
@@ -229,7 +229,7 @@ async def chara(ctx, query: str):
             elif response.status == 200:
                 data = await response.json()
                 if data:
-                    count = cnt()
+                    count = await cnt()
                     randomwaifu = random.randint(0, count)
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
