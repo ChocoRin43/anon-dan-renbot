@@ -188,7 +188,7 @@ async def chara(ctx, query: str):
     lquery = query.lower()
 
     prvnt_tag = ["loli", "shota", "shotacon", "lolicon"]
-    is_prvnt = query.lower() in prvnt_tag
+    is_prvnt = any(qr in query.lower() for qr in prvnt_tag)
 
     def check_url_file_type(urlImage):
         photo_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
@@ -207,7 +207,12 @@ async def chara(ctx, query: str):
         async with session.get(urlg) as response:
             if response.status == 200 and is_prvnt:
                 await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
-            
+                try:
+                    await ctx.message.delete()
+                except discord.Forbidden:
+                    await ctx.send("Bot tidak memiliki izin untuk menghapus pesan.")
+                except discord.HTTPException as e:
+                    await ctx.send(f"Terjadi error: {e}")
             elif response.status == 200:
                 data = await response.json()
                 if data:
