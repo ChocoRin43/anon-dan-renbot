@@ -5,6 +5,9 @@ import os
 from discord.ext import commands
 import aiohttp
 import random
+import datetime
+import traceback
+import sys
 
 load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("API_KEY")
@@ -18,6 +21,18 @@ bot = commands.Bot(command_prefix="+", intents=intents)
 
 # Icon untuk bot (digunakan pada embed)
 botIcon = discord.File("./rin.jpeg", filename="rin.jpeg")
+
+# Fungsi untuk menulis log error
+def write_log(error_message):
+    timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+    with open("log.txt", "a") as log_file:
+        log_file.write(f"{timestamp} {error_message}\n")
+
+def global_error_handler(exctype, value, tb):
+    error_message = f"Error global:\n{exctype.__name__}: {value}\n{''.join(traceback.format_tb(tb))}"
+    write_log(error_message)
+
+sys.excepthook = global_error_handler
 
 @bot.event
 async def on_ready():
@@ -178,7 +193,10 @@ async def chara(ctx, query: str):
     urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=10&json=1"
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
-            if response.status == 200:
+            if response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
+                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
+            
+            elif response.status == 200:
                 data = await response.json()
                 if data:
                     randomwaifu = random.randint(0, 9)
@@ -202,9 +220,6 @@ async def chara(ctx, query: str):
                         await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     else:
                         await ctx.send("Tidak dapat menemukan gambar untuk tag tersebut.")
-            
-            elif response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
-                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
             
             else:
                 await ctx.send("Sepertinya ada yang salah")
