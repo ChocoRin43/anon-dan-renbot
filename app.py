@@ -9,6 +9,8 @@ import random
 import datetime
 import traceback
 import sys
+import json
+import asyncio
 
 load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("API_KEY")
@@ -184,6 +186,14 @@ async def chara(ctx, query: str):
     :param query: Query pencarian karakter.
     Untuk tagnya bisa dispasi atau bisa lihat di gelbooru sendiri
     """    
+    async def cnt():
+            if response.status == 200:
+                json_data = await response.json(content_type=None)
+                count = json_data.get('@attributes', {}).get('count')
+                return count
+            else:
+                print(f"Request gagal dengan status: {response.status}")
+                return None
 
     lquery = query.lower()
 
@@ -206,7 +216,7 @@ async def chara(ctx, query: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
             if response.status == 200 and is_prvnt:
-                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
+                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
                 try:
                     await ctx.message.delete()
                 except discord.Forbidden:
@@ -216,7 +226,8 @@ async def chara(ctx, query: str):
             elif response.status == 200:
                 data = await response.json()
                 if data:
-                    randomwaifu = random.randint(0, 9)
+                    count = cnt()
+                    randomwaifu = random.randint(0, count)
                     chara = data["post"][randomwaifu]
                     imgChara = chara["file_url"]
                     pvImg = chara["preview_url"]
