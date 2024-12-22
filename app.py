@@ -1,3 +1,4 @@
+from operator import is_
 import os
 import discord
 from dotenv import load_dotenv
@@ -182,7 +183,13 @@ async def chara(ctx, query: str):
     Mencari informasi karakter anime dari gelbooru.
     :param query: Query pencarian karakter.
     Untuk tagnya bisa dispasi atau bisa lihat di gelbooru sendiri
-    """
+    """    
+
+    lquery = query.lower()
+
+    prvnt_tag = ["loli", "shota", "shotacon", "lolicon"]
+    is_prvnt = query.lower() in prvnt_tag
+
     def check_url_file_type(urlImage):
         photo_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
         video_extensions = {".mp4", ".avi", ".mov", ".mkv", ".flv", ".wmv", ".webm"}
@@ -195,10 +202,10 @@ async def chara(ctx, query: str):
                 return False
         return "unknown"
 
-    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={query}&limit=10&json=1"
+    urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=10&json=1"
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
-            if response.status == 200 and query == ["loli", "shota", "shotacon", "lolicon"]:
+            if response.status == 200 and is_prvnt:
                 await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
             
             elif response.status == 200:
