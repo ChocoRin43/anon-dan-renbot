@@ -56,8 +56,8 @@ async def ping(interaction: discord.Interaction):
     latency = round(bot.latency * 1000)
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency} ms")
 
-@bot.command()
-async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
+@bot.tree.command(name="waifu", description="Untuk mengambil gambar dari waifu.pics")
+async def waifu(interaction: discord.Interaction, category: str, image_type: str):
     """
     Perintah untuk mengambil gambar waifu dari waifu.pics
     Args:
@@ -66,11 +66,11 @@ async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
     """
 
     if category not in ["sfw", "nsfw"]:
-        await ctx.send("Kategori harus 'sfw' atau 'nsfw'!")
+        await interaction.response.send_message("Kategori harus 'sfw' atau 'nsfw'!")
         return
     
     if image_type not in ["waifu", "trap", "neko", "shinobu", "megumin", "bully", "cuddle", "hug", "kiss", "lick", "pat", "smug", "bonk", "yeet", "blush", "smile", "wave", "highfive", "handhold", "nom", "bite", "glomp", "slap", "kill", "kick", "happy", "wink", "poke", "dance", "cringe", "blowjob"]:
-        await ctx.send("Tipe gambar tidak valid! Cek daftar tipe di waifu.pics.")
+        await interaction.response.send_message("Tipe gambar tidak valid! Cek daftar tipe di waifu.pics.")
         return
 
     url = f"https://api.waifu.pics/{category}/{image_type}"
@@ -83,9 +83,9 @@ async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
                 embed = discord.Embed(title=f"{category.upper()} {image_type.capitalize()}", color=discord.Color.fuchsia())
                 embed.set_footer(text="Rin Bot | Disediakan oleh waifu.pics", icon_url="attachment://rin.jpeg")
                 embed.set_image(url=image_url)
-                await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                await interaction.response.send_message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
             else:
-                await ctx.send("Terjadi kesalahan saat mengambil gambar.")
+                await interaction.response.send_message("Terjadi kesalahan saat mengambil gambar.")
 @bot.command()
 async def nekos(ctx, kategori: str ="catgirl;"):
     """
