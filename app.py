@@ -1,6 +1,7 @@
-from operator import is_
+from code import interact
 import os
 import discord
+from discord import app_commands
 from dotenv import load_dotenv
 import os
 from discord.ext import commands
@@ -44,6 +45,8 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
     await bot.tree.sync()
+    activity = discord.Game(name="+help | Rin Bot")
+    await bot.change_presence(status=discord.Status.idle, activity=activity)
     print(f"Bot telah masuk sebagai {bot.user}")
 
 @bot.tree.command(name="ping", description="Untuk melihat status ready pada bot")
@@ -55,12 +58,18 @@ async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency} ms")
 
 @bot.tree.command(name="waifu", description="Untuk mengambil gambar dari waifu.pics")
+@app_commands.choices(
+    category=[
+        discord.app_commands.Choice(name="SFW", value="sfw"),
+        discord.app_commands.Choice(name="NSFW", value="nsfw")
+    ]
+)
 async def waifu(interaction: discord.Interaction, category: str, image_type: str):
     """
     Perintah untuk mengambil gambar waifu dari waifu.pics
     Args:
         category (str): Kategori gambar ('sfw' atau 'nsfw')
-        image_type (str): Tipe gambar ('waifu', 'neko', dll.)
+        image_type (str): Tipe gambar ('waifu', 'neko', "shinobu", "megumin", "bully", "cuddle", "hug", "kiss")
     """
 
     if category not in ["sfw", "nsfw"]:
@@ -84,8 +93,8 @@ async def waifu(interaction: discord.Interaction, category: str, image_type: str
                 await interaction.response.send_message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
             else:
                 await interaction.response.send_message("Terjadi kesalahan saat mengambil gambar.")
-@bot.command()
-async def nekos(ctx, kategori: str ="catgirl;"):
+@bot.tree.command(name="neko", description="Untuk mengambil gambar dari nekos.cat")
+async def nekos(interaction: discord.Interaction, kategori: str):
     """
     Mengambil gambar dari API nekos.cat.
     :param kategori: Kategori gambar (default: catgirl).
@@ -96,7 +105,7 @@ async def nekos(ctx, kategori: str ="catgirl;"):
     """
     
     if kategori not in ["catgirl", "foxgirl", "wolf-girl", "animal-ears", "tail", "tail-with-ribbon", "tail-from-under-skirtcute", "cuteness-is-justice", "blue-archive", "girl", "young-girl", "maid", "maid-uniform", "vtuber", "w-sitting", "lying-down", "hands-forming-a-heart", "wink", "valentine", "headphonesthigh-high-socks", "knee-high-socks", "white-tights", "black-tights", "heterochromia", "uniform", "sailor-uniform", "hoodie", "ribbon", "white-hair", "blue-hair", "long-hair", "blonde", "blue-eyes", "purple-eyes", "swimwear", "swimsuit", "bikini", "sea", "swim-ring"]:
-        await ctx.send("Tipe gambar tidak valid! Cek daftar tipe di nekos")
+        await interaction.send.message("Tipe gambar tidak valid! Cek daftar tipe di nekos")
         return
 
     url = f"https://api.nekosia.cat/api/v1/images/{kategori}"
@@ -111,15 +120,15 @@ async def nekos(ctx, kategori: str ="catgirl;"):
                     bed = discord.Embed(title=f"Kategori: {ctgory}", color=discord.Color.fuchsia())
                     bed.set_footer(text="Rin Bot | Disediakan oleh nekosia.cat", icon_url="attachment://rin.jpeg")
                     bed.set_image(url=image_url)
-                    await ctx.send(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                    await interaction.send.message(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
-                    await ctx.send("Tidak dapat menemukan gambar untuk kategori ini.")
+                    await interaction.send.message("Tidak dapat menemukan gambar untuk kategori ini.")
             else:
-                await ctx.send("Terjadi kesalahan saat menghubungi API.")
-                await ctx.send(f"Pesan Kesalahan{url}")
+                await interaction.send.message("Terjadi kesalahan saat menghubungi API.")
+                await interaction.send.message(f"Pesan Kesalahan{url}")
 
-@bot.command()
-async def gif(ctx, kategori: str ="baka;"):
+@bot.tree.command()
+async def gif(interaction: discord.Interaction, kategori: str ="baka;"):
     """
     Mengambil gambar dari API nekos.best.
     :param kategori: Kategori gif (default: baka).
@@ -129,7 +138,7 @@ async def gif(ctx, kategori: str ="baka;"):
     """
     
     if kategori not in ["baka", "cry", "bite", "blush", "bored", "cuddle", "dance", "facepalm", "feed", "handhold", "handshake", "happy", "highfive", "hug", "kick", "kiss", "laugh", "lurk", "nod", "nom", "nope", "pat", "peck", "poke", "pout", "punch", "shoot", "shrug", "slap", "sleep", "smile", "smug", "stare", "think", "thumbsup", "tickle", "wave", "wink", "yawn", "yeet"]:
-        await ctx.send("Tipe gif tidak valid! Cek daftar tipe di nekos.best")
+        await interaction.send.message("Tipe gif tidak valid! Cek daftar tipe di nekos.best")
         return
 
     url = f"https://nekos.best/api/v2/{kategori}"
@@ -143,15 +152,15 @@ async def gif(ctx, kategori: str ="baka;"):
                     bed = discord.Embed(title=f"Anime: {animeName}", color=discord.Color.fuchsia(),)
                     bed.set_footer(text="Rin Bot | Disediakan oleh nekos.cat", icon_url="attachment://rin.jpeg")
                     bed.set_image(url=image_url)
-                    await ctx.send(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                    await interaction.send.message(embed=bed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
-                    await ctx.send("Tidak dapat menemukan gambar untuk kategori ini.")
+                    await interaction.send.message("Tidak dapat menemukan gambar untuk kategori ini.")
             else:
-                await ctx.send("Terjadi kesalahan saat menghubungi API.")
-                await ctx.send(f"Pesan Kesalahan{url}")
+                await interaction.send.message("Terjadi kesalahan saat menghubungi API.")
+                await interaction.send.message(f"Pesan Kesalahan{url}")
 
-@bot.command()
-async def anime(ctx, query: str):
+@bot.tree.command(name="anime", description="Untuk mencari informasi anime dari myanimelist")
+async def anime(interaction: discord.Interaction, query: str):
     """
     Mencari informasi anime dari myanimelist.
     :param query: Query pencarian anime.
@@ -172,14 +181,14 @@ async def anime(ctx, query: str):
                     embed.set_image(url=imgAnime)
                     embed.add_field(name="More Info", value=f"[Click here]({url})")
                     embed.set_footer(text="Rin Bot | Disediakan oleh Jikan API", icon_url="attachment://rin.jpeg")
-                    await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                    await interaction.send.message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                 else:
-                    await ctx.send("Anime tidak ditemukan.")
+                    await interaction.send.message("Anime tidak ditemukan.")
             else:
-                await ctx.send("Gagal mengambil data dari API.")
+                await interaction.send.message("Gagal mengambil data dari API.")
 
-@bot.command()
-async def chara(ctx, query: str):
+@bot.tree.command(name="chara", description="Untuk mencari gambar karakter anime dari gelbooru")
+async def chara(interaction: discord.Interaction, query: str):
     """
     Mencari informasi karakter anime dari gelbooru.
     :param query: Query pencarian karakter.
@@ -218,21 +227,21 @@ async def chara(ctx, query: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
             if response.status == 200 and is_prvnt:
-                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
+                await interaction.send.message("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
                 try:
-                    await ctx.message.delete()
+                    await interaction.delete()
                 except discord.Forbidden:
-                    await ctx.send("Bot tidak memiliki izin untuk menghapus pesan.")
+                    await interaction.send.message("Bot tidak memiliki izin untuk menghapus pesan.")
                 except discord.HTTPException as e:
-                    await ctx.send(f"Terjadi error: {e}")
-            elif response.status == 200 and ctx.channel.is_nsfw() == False:
-                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
+                    await interaction.send.message(f"Terjadi error: {e}")
+            elif response.status == 200 and isinstance(interaction.channel, discord.TextChannel) and interaction.channel.is_nsfw():
+                await interaction.send.message("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
                 try:
-                    await ctx.message.delete()
+                    await interaction.message.delete()
                 except discord.Forbidden:
-                    await ctx.send("Bot tidak memiliki izin untuk menghapus pesan.")
+                    await interaction.send.message("Bot tidak memiliki izin untuk menghapus pesan.")
                 except discord.HTTPException as e:
-                    await ctx.send(f"Terjadi error: {e}")
+                    await interaction.send.message(f"Terjadi error: {e}")
             elif response.status == 200:
                 data = await response.json()
                 if data:
@@ -249,60 +258,60 @@ async def chara(ctx, query: str):
                         embed.set_image(url=imgChara)
                         embed.add_field(name="Source", value=f"[Click here]({sc})")
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-                        await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                        await interaction.send.message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     elif photoext == False:
                         embed = discord.Embed(title=name, description="File tersebut video, jika ingin menonton silahkan pergi ke sumbernya", color=discord.Color.fuchsia())
                         embed.set_image(url=pvImg)
                         embed.add_field(name="Source", value=f"[Click here]({sc})")
                         embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-                        await ctx.send(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+                        await interaction.send.message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     else:
-                        await ctx.send("Tidak dapat menemukan gambar untuk tag tersebut.")
+                        await interaction.send.message("Tidak dapat menemukan gambar untuk tag tersebut.")
             
             else:
-                await ctx.send("Sepertinya ada yang salah")
+                await interaction.send.message("Sepertinya ada yang salah")
                 raise Exception(f"Error {response.status}: Failed to fetch data")
 
-@bot.command()
-async def talita(ctx):
-    await ctx.send("Talita punya nya Rehan")
+@bot.tree.command(name="talita", description="Cobain aja")
+async def talita(interaction: discord.Interaction):
+    await interaction.send.message("Talita punya nya Rehan")
 
-@bot.command()
-async def dadu(ctx):
+@bot.tree.command(name="dadu", description="Untuk mengkocok dadu")
+async def dadu(interaction: discord.Interaction):
     """
     Mengkocok dadu 1 sampai 6.
     """
     dadu = random.randint(1, 6)
-    await ctx.send(f"🎲 Angka dadu: {dadu} 🎲")
+    await interaction.response.send_message(f"🎲 Angka dadu: {dadu} 🎲")
 
-@bot.command()
-async def membercount(ctx):
+@bot.tree.command(name= "membercount", description="Untuk melihat jumlah member di server")
+async def membercount(interaction: discord.Interaction):
     """
     Menampilkan jumlah member di server.
     """
-    member_count = ctx.guild.member_count
-    await ctx.send(f"Jumlah anggota di server ini: {member_count}")
+    member_count = interaction.guild.member_count
+    await interaction.response.send_message(f"Jumlah anggota di server ini: {member_count}")
 
-@bot.command()
+@bot.tree.command(name="kick", description="Untuk mengeluarkan anggota dari server")
 @commands.has_permissions(kick_members=True)
-async def kick(ctx, member: discord.Member, *, reason=None):
+async def kick(interaction: discord.Interaction, member: discord.Member, *, reason: str = None):
     """
     Kick seorang anggota dari server.
     :param member: Anggota yang akan di-kick.
     :param reason: Alasan kick (opsional).
     """
+    await interaction.response.send_message(f'{member.mention} telah di-kick dari server. Alasan: {reason}')
     await member.kick(reason=reason)
-    await ctx.send(f'{member.mention} telah di-kick dari server. Alasan: {reason}')
 
-@bot.command()
+@bot.tree.command(name="ban", description="Untuk mem-ban anggota dari server")
 @commands.has_permissions(ban_members=True)
-async def ban(ctx, member: discord.Member, *, reason=None):
+async def ban(interaction: discord.Interaction, member: discord.Member, *, reason: str = None):
     """
     Ban seorang anggota dari server.
     :param member: Anggota yang akan di-ban.
     :param reason: Alasan ban (opsional).
     """
+    await interaction.response.send_message(f'{member.mention} telah di-ban dari server. Alasan: {reason}')
     await member.ban(reason=reason)
-    await ctx.send(f'{member.mention} telah di-ban dari server. Alasan: {reason}')
 
 bot.run(DISCORD_BOT_TOKEN)
