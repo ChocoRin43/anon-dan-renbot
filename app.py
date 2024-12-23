@@ -218,6 +218,14 @@ async def chara(ctx, query: str):
     urlg = f"https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=100&json=1"
     async with aiohttp.ClientSession() as session:
         async with session.get(urlg) as response:
+            if ctx.channel.is_nsfw() == False:
+                await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
+                try:
+                    await ctx.message.delete()
+                except discord.Forbidden:
+                    await ctx.send("Bot tidak memiliki izin untuk menghapus pesan.")
+                except discord.HTTPException as e:
+                    await ctx.send(f"Terjadi error: {e}")
             if response.status == 200 and is_prvnt:
                 await ctx.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
                 try:
