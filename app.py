@@ -45,15 +45,16 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_ready():
+    await bot.tree.sync()
     print(f"Bot telah masuk sebagai {bot.user}")
 
-@bot.command()
-async def ping(ctx):
+@bot.tree.command(name="ping", description="Untuk melihat status ready pada bot")
+async def ping(interaction: discord.Interaction):
     """
     Untuk Melihat Ping Delay Dari Bot
     """
     latency = round(bot.latency * 1000)
-    await ctx.send(f"Pong! 🏓 Latency: {latency} ms")
+    await interaction.response.send_message(f"Pong! 🏓 Latency: {latency} ms")
 
 @bot.command()
 async def waifu(ctx, category: str = "sfw", image_type: str = "waifu"):
