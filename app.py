@@ -1,4 +1,3 @@
-from code import interact
 import os
 import discord
 from discord import app_commands
