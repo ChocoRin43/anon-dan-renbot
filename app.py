@@ -9,8 +9,6 @@ import random
 import datetime
 import traceback
 import sys
-import json
-import asyncio
 
 load_dotenv()
 DISCORD_BOT_TOKEN = os.getenv("API_KEY")
