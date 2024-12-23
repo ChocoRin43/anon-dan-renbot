@@ -235,14 +235,6 @@ async def chara(interaction: discord.Interaction, query: str):
                 except discord.HTTPException as e:
                     await interaction.response.send_message(f"Terjadi error: {e}")
             elif response.status == 200 and isinstance(interaction.channel, discord.TextChannel) and interaction.channel.is_nsfw():
-                await interaction.response.send_message("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
-                try:
-                    await interaction.message.delete()
-                except discord.Forbidden:
-                    await interaction.response.send_message("Bot tidak memiliki izin untuk menghapus pesan.")
-                except discord.HTTPException as e:
-                    await interaction.response.send_message(f"Terjadi error: {e}")
-            elif response.status == 200:
                 data = await response.json()
                 if data:
                     count = await cnt()
@@ -267,7 +259,8 @@ async def chara(interaction: discord.Interaction, query: str):
                         await interaction.response.send_message(embed=embed, file=discord.File("rin.jpeg", filename="rin.jpeg"))
                     else:
                         await interaction.response.send_message("Tidak dapat menemukan gambar untuk tag tersebut.")
-            
+            elif response.status == 200:
+                await interaction.response.send_message("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
             else:
                 await interaction.response.send_message("Sepertinya ada yang salah")
                 raise Exception(f"Error {response.status}: Failed to fetch data")
