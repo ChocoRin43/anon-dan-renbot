@@ -60,8 +60,9 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="gel", description="Untuk mengambil gambar dari Gelbooru")
 async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
-    view = GelbooruView(tags)
-    image_url = await fetch_gelbooru_image(tags)
+    lquery = tags.lower()
+    view = GelbooruView(lquery)
+    image_url = await fetch_gelbooru_image(lquery)
     if image_url:
         embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{tags}`")
         embed.set_image(url=image_url)
