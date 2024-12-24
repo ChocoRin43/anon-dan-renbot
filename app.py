@@ -2,13 +2,13 @@ import os
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
-import os
 from discord.ext import commands
 import aiohttp
 import random
 import datetime
 import traceback
 import sys
+from appGel import fetch_gelbooru_image, GelbooruView
 
 api_gel = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}&limit=100&json=1"
 
@@ -58,45 +58,16 @@ async def ping(interaction: discord.Interaction):
     latency = round(bot.latency * 1000)
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency} ms")
 
-async def fetch_gelbooru_image(tags: str):
-    """Mengambil data dari Gelbooru berdasarkan tag."""
-    async with aiohttp.ClientSession() as session:
-        async with session.get(api_gel.format(tags=tags)) as response:
-            if response.status == 200:
-                data = await response.json()
-                if data.get("post"):
-                    getId = random.randint(0, 95)
-                    return data["post"][getId]["file_url"]  # URL gambar atau video
-                return None
-            return None
-        
-class GelbooruView(discord.ui.View):
-    def __init__(self, tags: str):
-        super().__init__()
-        self.tags = tags
-
-    @discord.ui.button(label="Get New Image", style=discord.ButtonStyle.success)
-    async def get_new_image(self, interaction: discord.Interaction, button: discord.ui.Button):
-        image_url = await fetch_gelbooru_image(self.tags)
-        if image_url:
-            # Update pesan dengan gambar baru
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.tags}`")
-            embed.set_image(url=image_url)
-            await interaction.response.edit_message(embed=embed, view=self)
-        else:
-            await interaction.response.send_message("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
-
-@bot.command()
-async def gel(ctx, *, tags: str = "anime"):
-    """Command untuk mengambil gambar Gelbooru berdasarkan tag."""
+@bot.tree.command(name="gel", description="Untuk mengambil gambar dari Gelbooru")
+async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
     view = GelbooruView(tags)
     image_url = await fetch_gelbooru_image(tags)
     if image_url:
         embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{tags}`")
         embed.set_image(url=image_url)
-        await ctx.send(embed=embed, view=view)
+        await interaction.response.send_message(embed=embed, view=view)
     else:
-        await ctx.send("Tidak ditemukan hasil untuk tag tersebut.")
+        await interaction.response.send_message("Tidak ditemukan hasil untuk tag tersebut.")
 
 
 @bot.tree.command(name="waifu", description="Untuk mengambil gambar dari waifu.pics")
