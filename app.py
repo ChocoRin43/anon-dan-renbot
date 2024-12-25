@@ -70,11 +70,11 @@ async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
             # Update pesan dengan gambar baru
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
             embed.set_image(url=image_url)
-            await interaction.response.send_message(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view)
     elif urlext == False:
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
             embed.add_field(name="Video", value=pv_url)
-            await interaction.response.send_message(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view)
     else:
         await interaction.response.send_message("Tidak ditemukan hasil untuk tag tersebut.")
 
