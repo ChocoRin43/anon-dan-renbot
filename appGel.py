@@ -45,13 +45,13 @@ class GelbooruView(discord.ui.View):
             # Update pesan dengan gambar baru
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
             embed.set_image(url=image_url)
-            await interaction.response.edit_message(embed=embed, view=self)
+            await interaction.followup.edit_message(embed=embed, view=self)
         elif urlext == False:
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
             embed.add_field(name="Video", value=pv_url)
-            await interaction.response.edit_message(embed=embed, view=self)
+            await interaction.followup.edit_message(embed=embed, view=self)
         else:
-            await interaction.response.send_message("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
+            await interaction.followup.send("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
 
 # check count in gelbooru
 async def cnt():
