@@ -37,6 +37,7 @@ class GelbooruView(discord.ui.View):
 
     @discord.ui.button(label="Change", style=discord.ButtonStyle.success)
     async def get_new_image(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
         image_url = await fetch_gelbooru_image(self.lquery)
         pv_url = await fetch_gelbooru_image_pv(self.lquery)
         urlext = check_url_file_type(image_url)
