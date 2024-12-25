@@ -1,3 +1,4 @@
+from email import message
 import discord
 import random
 import aiohttp
@@ -37,6 +38,7 @@ class GelbooruView(discord.ui.View):
 
     @discord.ui.button(label="Change", style=discord.ButtonStyle.success)
     async def get_new_image(self, interaction: discord.Interaction, button: discord.ui.Button):
+        messageId = interaction.message.id
         await interaction.response.defer()
         image_url = await fetch_gelbooru_image(self.lquery)
         pv_url = await fetch_gelbooru_image_pv(self.lquery)
@@ -45,11 +47,11 @@ class GelbooruView(discord.ui.View):
             # Update pesan dengan gambar baru
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
             embed.set_image(url=image_url)
-            await interaction.followup.edit_message(embed=embed, view=self)
+            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
         elif urlext == False:
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
             embed.add_field(name="Video", value=pv_url)
-            await interaction.followup.edit_message(embed=embed, view=self)
+            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
         else:
             await interaction.followup.send("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
 
