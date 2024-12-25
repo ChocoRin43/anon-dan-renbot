@@ -8,7 +8,7 @@ import random
 import datetime
 import traceback
 import sys
-from appGel import fetch_gelbooru_image, GelbooruView
+from appGel import fetch_gelbooru_image, GelbooruView, fetch_gelbooru_image_pv, check_url_file_type
 
 api_gel = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={tags}&limit=100&json=1"
 
@@ -63,10 +63,17 @@ async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
     lquery = tags.lower()
     view = GelbooruView(lquery)
     image_url = await fetch_gelbooru_image(lquery)
-    if image_url:
-        embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{tags}`")
-        embed.set_image(url=image_url)
-        await interaction.response.send_message(embed=embed, view=view)
+    pv_url = await fetch_gelbooru_image_pv(lquery)
+    urlext = check_url_file_type(image_url)
+    if urlext == True:
+            # Update pesan dengan gambar baru
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
+            embed.set_image(url=image_url)
+            await interaction.response.send_message(embed=embed, view=view)
+    elif urlext == False:
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
+            embed.add_field(name="Video", value=pv_url)
+            await interaction.response.send_message(embed=embed, view=view)
     else:
         await interaction.response.send_message("Tidak ditemukan hasil untuk tag tersebut.")
 
