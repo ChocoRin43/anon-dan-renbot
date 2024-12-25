@@ -76,13 +76,13 @@ async def gel(interaction: discord.Interaction, *, tags: str):
             # Update pesan dengan gambar baru
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.fuchsia())
             embed.set_image(url=image_url)
-            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-            await interaction.followup.send(embed=embed, view=view, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru")
+            await interaction.followup.send(embed=embed, view=view)
     elif urlext == False:
             embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.fuchsia())
             embed.add_field(name="Video", value=pv_url)
-            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
-            await interaction.followup.send(embed=embed, view=view, file=discord.File("rin.jpeg", filename="rin.jpeg"))
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru")
+            await interaction.followup.send(embed=embed, view=view)
     else:
         await interaction.response.send_message("Tidak ditemukan hasil untuk tag tersebut.")
 

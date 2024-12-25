@@ -5,7 +5,6 @@ import aiohttp
 
 api_gel = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=100&json=1"
 
-botIcon = discord.File("./rin.jpeg", filename="rin.jpeg")
 
 async def fetch_gelbooru_image(lquery: str):
     """Mengambil data dari Gelbooru berdasarkan tag."""
