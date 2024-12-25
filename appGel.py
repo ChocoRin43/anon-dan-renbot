@@ -47,14 +47,14 @@ class GelbooruView(discord.ui.View):
         urlext = check_url_file_type(image_url)
         if urlext == True:
             # Update pesan dengan gambar baru
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
+            embed = discord.Embed(title="Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
             embed.set_image(url=image_url)
-            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="https://github.com/ChocoRin43/anon-dan-renbot/blob/44f907290c7bf7bbc688d2f557a7fd274501bd51/rin.jpeg")
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru")
             await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
         elif urlext == False:
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
+            embed = discord.Embed(title="Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
             embed.add_field(name="Video", value=pv_url)
-            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="https://github.com/ChocoRin43/anon-dan-renbot/blob/44f907290c7bf7bbc688d2f557a7fd274501bd51/rin.jpeg")
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru")
             await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
         else:
             await interaction.followup.send("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
