@@ -59,7 +59,7 @@ async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency} ms")
 
 @bot.tree.command(name="gel", description="Untuk mengambil gambar dari Gelbooru")
-async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
+async def gel(interaction: discord.Interaction, *, tags: str):
     await interaction.response.defer()
     vQuery = tags
     prvnt_tag = ["loli", "shota", "shotacon", "lolicon"]
