@@ -35,7 +35,7 @@ class GelbooruView(discord.ui.View):
         super().__init__()
         self.lquery = lquery
 
-    @discord.ui.button(label="Change", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Change", style=discord.ButtonStyle.success)
     async def get_new_image(self, interaction: discord.Interaction, button: discord.ui.Button):
         image_url = await fetch_gelbooru_image(self.lquery)
         pv_url = await fetch_gelbooru_image_pv(self.lquery)
