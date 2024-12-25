@@ -65,7 +65,7 @@ async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
     prvnt_tag = ["loli", "shota", "shotacon", "lolicon"]
     is_prvnt = any(qr in vQuery.lower() for qr in prvnt_tag)
     if is_prvnt:
-        await interaction.followup.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut", delete_after=5)
+        await interaction.followup.send("Dikarenakan discord memiliki peraturan yang sangat ketat, kami tidak toleransi dengan tag tersebut")
         return
     lquery = tags.lower()
     view = GelbooruView(lquery)
@@ -74,13 +74,15 @@ async def gel(interaction: discord.Interaction, *, tags: str = "anime"):
     urlext = check_url_file_type(image_url)
     if urlext == True:
             # Update pesan dengan gambar baru
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.fuchsia())
             embed.set_image(url=image_url)
-            await interaction.followup.send(embed=embed, view=view)
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+            await interaction.followup.send(embed=embed, view=view, file=discord.File("rin.jpeg", filename="rin.jpeg"))
     elif urlext == False:
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.blurple())
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{lquery}`", color=discord.Color.fuchsia())
             embed.add_field(name="Video", value=pv_url)
-            await interaction.followup.send(embed=embed, view=view)
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+            await interaction.followup.send(embed=embed, view=view, file=discord.File("rin.jpeg", filename="rin.jpeg"))
     else:
         await interaction.response.send_message("Tidak ditemukan hasil untuk tag tersebut.")
 

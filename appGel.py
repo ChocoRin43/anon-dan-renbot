@@ -5,6 +5,8 @@ import aiohttp
 
 api_gel = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={lquery}&limit=100&json=1"
 
+botIcon = discord.File("./rin.jpeg", filename="rin.jpeg")
+
 async def fetch_gelbooru_image(lquery: str):
     """Mengambil data dari Gelbooru berdasarkan tag."""
     async with aiohttp.ClientSession() as session:
@@ -45,13 +47,15 @@ class GelbooruView(discord.ui.View):
         urlext = check_url_file_type(image_url)
         if urlext == True:
             # Update pesan dengan gambar baru
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
             embed.set_image(url=image_url)
-            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self, file=discord.File("rin.jpeg", filename="rin.jpeg"))
         elif urlext == False:
-            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.blurple())
+            embed = discord.Embed(title="Gelbooru Result", description=f"Tag: `{self.lquery}`", color=discord.Color.fuchsia())
             embed.add_field(name="Video", value=pv_url)
-            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self)
+            embed.set_footer(text="Rin Bot | Disediakan oleh Gelbooru", icon_url="attachment://rin.jpeg")
+            await interaction.followup.edit_message(message_id=messageId, embed=embed, view=self, file=discord.File("rin.jpeg", filename="rin.jpeg"))
         else:
             await interaction.followup.send("Tidak ditemukan hasil untuk tag ini.", ephemeral=True)
 
